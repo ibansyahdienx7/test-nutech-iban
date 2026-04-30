@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const db = require('../config/database');
+const crypto = require('crypto');
+const jwt    = require('jsonwebtoken');
+const db     = require('../config/database');
 const { successResponse, errorResponse } = require('../helpers/response');
 const logger = require('../helpers/logger');
 
@@ -101,6 +102,10 @@ const login = async (req, res) => {
 
 // GET /profile
 const getProfile = async (req, res) => {
+  if (!req.user || !req.user.email) {
+    return errorResponse(res, 108, 'Token tidak tidak valid atau kadaluwarsa', 401);
+  }
+
   try {
     const [users] = await db.execute(
       'SELECT email, first_name, last_name, profile_image FROM users WHERE email = ?',
@@ -119,6 +124,10 @@ const getProfile = async (req, res) => {
 
 // PUT /profile/update
 const updateProfile = async (req, res) => {
+  if (!req.user || !req.user.email) {
+    return errorResponse(res, 108, 'Token tidak tidak valid atau kadaluwarsa', 401);
+  }
+
   const { first_name, last_name } = req.body;
 
   if (!first_name || !last_name) {
@@ -146,6 +155,10 @@ const updateProfile = async (req, res) => {
 
 // PUT /profile/image
 const uploadProfileImage = async (req, res) => {
+  if (!req.user || !req.user.email) {
+    return errorResponse(res, 108, 'Token tidak tidak valid atau kadaluwarsa', 401);
+  }
+
   if (!req.file) {
     return errorResponse(res, 102, 'Format Image tidak sesuai');
   }
@@ -171,4 +184,33 @@ const uploadProfileImage = async (req, res) => {
   }
 };
 
-module.exports = { register, login, getProfile, updateProfile, uploadProfileImage };
+// POST /logout
+const logout = async (req, res) => {
+  if (!req.user || !req.user.email) {
+    return errorResponse(res, 108, 'Token tidak tidak valid atau kadaluwarsa', 401);
+  }
+
+  const token = req.token;
+  if (!token) {
+    return errorResponse(res, 108, 'Token tidak tidak valid atau kadaluwarsa', 401);
+  }
+
+  try {
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+    const decoded   = jwt.decode(token);
+    const expiredAt = new Date(decoded.exp * 1000);
+
+    await db.execute(
+      'INSERT IGNORE INTO token_blacklist (token_hash, email, expired_at) VALUES (?, ?, ?)',
+      [tokenHash, req.user.email, expiredAt]
+    );
+
+    logger.info('User logout - token diblacklist', { email: req.user.email });
+    return successResponse(res, 'Logout berhasil', null);
+  } catch (err) {
+    logger.error('Logout error', { email: req.user.email, message: err.message });
+    return errorResponse(res, 500, 'Internal server error', 500);
+  }
+};
+
+module.exports = { register, login, logout, getProfile, updateProfile, uploadProfileImage };

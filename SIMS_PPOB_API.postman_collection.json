@@ -15,6 +15,11 @@
       "key": "token",
       "value": "",
       "type": "string"
+    },
+    {
+      "key": "banner_id",
+      "value": "",
+      "type": "string"
     }
   ],
   "item": [
@@ -101,6 +106,7 @@
               "listen": "test",
               "script": {
                 "exec": [
+                  "pm.environment.set(\"TOKEN\", pm.response.json().data.token);",
                   "pm.test('Status code is 200', function () {",
                   "    pm.response.to.have.status(200);",
                   "});",
@@ -135,6 +141,40 @@
               "path": ["login"]
             }
           }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/logout",
+              "host": ["{{base_url}}"],
+              "path": ["logout"]
+            },
+            "description": "Logout dan invalidate token. Token yang sama tidak bisa digunakan lagi."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Logout berhasil', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql(0);",
+                  "    pm.collectionVariables.set('token', '');",
+                  "    console.log('Token dihapus dari collection variable');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
         },
         {
           "name": "Get Profile",
@@ -220,6 +260,327 @@
     {
       "name": "2. Module Information",
       "item": [
+        {
+          "name": "2.1. Module Information - CRUD",
+          "item": [
+            {
+              "name": "Store Banner",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "Authorization", "value": "Bearer {{token}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"banner_name\": \"Banner Promo\",\n  \"banner_image\": \"https://nutech-integrasi.app/dummy/banner/Banner-1.png\",\n  \"description\": \"Lerem Ipsum Dolor sit amet\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{base_url}}/banner",
+                  "host": ["{{base_url}}"],
+                  "path": ["banner"]
+                },
+                "description": "Tambah banner baru. Memerlukan Bearer Token."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 200', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "pm.test('Banner berhasil ditambahkan', function () {",
+                      "    var json = pm.response.json();",
+                      "    pm.expect(json.status).to.eql(0);",
+                      "    pm.expect(json.data).to.have.property('id');",
+                      "    pm.collectionVariables.set('banner_id', json.data.id);",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Update Banner",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "Authorization", "value": "Bearer {{token}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"banner_name\": \"Banner Promo Updated\",\n  \"banner_image\": \"https://nutech-integrasi.app/dummy/banner/Banner-1.png\",\n  \"description\": \"Deskripsi banner yang sudah diupdate\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{base_url}}/banner/{{banner_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["banner", "{{banner_id}}"]
+                },
+                "description": "Update banner berdasarkan ID."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 200', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "pm.test('Banner berhasil diupdate', function () {",
+                      "    var json = pm.response.json();",
+                      "    pm.expect(json.status).to.eql(0);",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Update Banner - Not Found",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "Authorization", "value": "Bearer {{token}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"banner_name\": \"Banner Tidak Ada\",\n  \"banner_image\": \"https://example.com/banner.png\"\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{base_url}}/banner/99999",
+                  "host": ["{{base_url}}"],
+                  "path": ["banner", "99999"]
+                },
+                "description": "Update banner dengan ID yang tidak ada — harus return 404."
+              }
+            },
+            {
+              "name": "Store Service",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "Authorization", "value": "Bearer {{token}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"service_code\": \"INTERNET\",\n  \"service_name\": \"Internet Berlangganan\",\n  \"service_icon\": \"https://nutech-integrasi.app/dummy/logo/Internet.png\",\n  \"service_tariff\": 150000\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{base_url}}/services",
+                  "host": ["{{base_url}}"],
+                  "path": ["services"]
+                },
+                "description": "Tambah layanan PPOB baru. service_code harus unik."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 200', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "pm.test('Service berhasil ditambahkan', function () {",
+                      "    var json = pm.response.json();",
+                      "    pm.expect(json.status).to.eql(0);",
+                      "    pm.expect(json.data).to.have.property('service_code');",
+                      "    pm.expect(json.data.service_tariff).to.be.a('number');",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Store Service - Duplicate Code",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "Authorization", "value": "Bearer {{token}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"service_code\": \"PULSA\",\n  \"service_name\": \"Pulsa Duplikat\",\n  \"service_icon\": \"https://example.com/icon.png\",\n  \"service_tariff\": 40000\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{base_url}}/services",
+                  "host": ["{{base_url}}"],
+                  "path": ["services"]
+                },
+                "description": "Store service dengan service_code yang sudah ada — harus return error 102."
+              }
+            },
+            {
+              "name": "Update Service",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "Authorization", "value": "Bearer {{token}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"service_name\": \"Internet Berlangganan Updated\",\n  \"service_icon\": \"https://nutech-integrasi.app/dummy/logo/Internet.png\",\n  \"service_tariff\": 200000\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{base_url}}/services/INTERNET",
+                  "host": ["{{base_url}}"],
+                  "path": ["services", "INTERNET"]
+                },
+                "description": "Update layanan berdasarkan service_code."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 200', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "pm.test('Service berhasil diupdate', function () {",
+                      "    var json = pm.response.json();",
+                      "    pm.expect(json.status).to.eql(0);",
+                      "    pm.expect(json.data.service_tariff).to.eql(200000);",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Update Service - Not Found",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "Authorization", "value": "Bearer {{token}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"service_name\": \"Tidak Ada\",\n  \"service_icon\": \"https://example.com/icon.png\",\n  \"service_tariff\": 10000\n}",
+                  "options": { "raw": { "language": "json" } }
+                },
+                "url": {
+                  "raw": "{{base_url}}/services/SERVICE_TIDAK_ADA",
+                  "host": ["{{base_url}}"],
+                  "path": ["services", "SERVICE_TIDAK_ADA"]
+                },
+                "description": "Update service dengan code yang tidak ada — harus return 404."
+              }
+            },
+            {
+              "name": "Delete Banner",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  { "key": "Authorization", "value": "Bearer {{token}}" }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/banner/{{banner_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["banner", "{{banner_id}}"]
+                },
+                "description": "Hapus banner berdasarkan ID."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 200', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "pm.test('Banner berhasil dihapus', function () {",
+                      "    var json = pm.response.json();",
+                      "    pm.expect(json.status).to.eql(0);",
+                      "    pm.collectionVariables.set('banner_id', '');",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Delete Banner - Not Found",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  { "key": "Authorization", "value": "Bearer {{token}}" }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/banner/99999",
+                  "host": ["{{base_url}}"],
+                  "path": ["banner", "99999"]
+                },
+                "description": "Hapus banner dengan ID yang tidak ada — harus return 404."
+              }
+            },
+            {
+              "name": "Delete Service",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  { "key": "Authorization", "value": "Bearer {{token}}" }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/services/INTERNET",
+                  "host": ["{{base_url}}"],
+                  "path": ["services", "INTERNET"]
+                },
+                "description": "Hapus service berdasarkan service_code."
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Status code is 200', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "pm.test('Service berhasil dihapus', function () {",
+                      "    var json = pm.response.json();",
+                      "    pm.expect(json.status).to.eql(0);",
+                      "    pm.expect(json.data).to.have.property('service_code');",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Delete Service - Not Found",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  { "key": "Authorization", "value": "Bearer {{token}}" }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/services/SERVICE_TIDAK_ADA",
+                  "host": ["{{base_url}}"],
+                  "path": ["services", "SERVICE_TIDAK_ADA"]
+                },
+                "description": "Hapus service yang tidak ada — harus return 404."
+              }
+            }
+          ]
+        },
         {
           "name": "Get Banner",
           "request": {

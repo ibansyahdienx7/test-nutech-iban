@@ -51,6 +51,20 @@ CREATE TABLE IF NOT EXISTS services (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ------------------------------------------------------------
+--  Table: token_blacklist
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS token_blacklist (
+  id          INT          NOT NULL AUTO_INCREMENT,
+  token_hash  VARCHAR(64)  NOT NULL,
+  email       VARCHAR(255) NOT NULL,
+  expired_at  TIMESTAMP    NOT NULL,
+  created_on  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_token_hash (token_hash),
+  INDEX idx_expired_at (expired_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ------------------------------------------------------------
 --  Table: transactions
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS transactions (

@@ -1,10 +1,20 @@
 const express      = require('express');
 const authenticate = require('../middleware/auth');
-const { getBanners, getServices } = require('../controllers/informationController');
+const {
+  getBanners, storeBanner, updateBanner, deleteBanner,
+  getServices, storeService, updateService, deleteService
+} = require('../controllers/informationController');
 
 const router = express.Router();
 
-router.get('/banner', getBanners);
-router.get('/services', authenticate, getServices);
+router.get('/banner',                    getBanners);
+router.post('/banner',                   authenticate, storeBanner);
+router.put('/banner/:id',                authenticate, updateBanner);
+router.delete('/banner/:id',             authenticate, deleteBanner);
+
+router.get('/services',                  authenticate, getServices);
+router.post('/services',                 authenticate, storeService);
+router.put('/services/:service_code',    authenticate, updateService);
+router.delete('/services/:service_code', authenticate, deleteService);
 
 module.exports = router;

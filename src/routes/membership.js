@@ -3,7 +3,7 @@ const path       = require('path');
 const multer     = require('multer');
 const authenticate = require('../middleware/auth');
 const {
-  register, login, getProfile, updateProfile, uploadProfileImage
+  register, login, logout, getProfile, updateProfile, uploadProfileImage
 } = require('../controllers/membershipController');
 
 const router = express.Router();
@@ -28,6 +28,7 @@ const upload = multer({ storage, fileFilter });
 
 router.post('/registration', register);
 router.post('/login', login);
+router.post('/logout', authenticate, logout);
 router.get('/profile', authenticate, getProfile);
 router.put('/profile/update', authenticate, updateProfile);
 

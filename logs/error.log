@@ -1,9 +1,3 @@
-[2026-04-30T05:51:53.772Z] [WARN] Registration gagal - email sudah terdaftar | {"email":"ibansyahdienx7@gmail.com"}
-[2026-04-30T05:53:14.569Z] [WARN] Registration gagal - email sudah terdaftar | {"email":"ibansyahdienx7@gmail.com"}
-[2026-04-30T05:53:14.570Z] [ERROR] Registration error | {"email":"ibansyahdienx7@gmail.com","message":"Invalid status code: { id: 1 }"}
-[2026-04-30T05:53:28.225Z] [WARN] Registration gagal - email sudah terdaftar | {"email":"ibansyahdienx7@gmail.com"}
-[2026-04-30T05:53:28.228Z] [ERROR] Registration error | {"email":"ibansyahdienx7@gmail.com","message":"Invalid status code: {\n  id: 1,\n  email: 'ibansyahdienx7@gmail.com',\n  first_name: 'IBAN SYAHDIEN',\n  last_name: 'AKBAR',\n  balance: '0.00'\n}"}
-[2026-04-30T05:54:43.712Z] [WARN] Registration gagal - email sudah terdaftar | {"email":"ibansyahdienx7@gmail.com"}
-[2026-04-30T05:56:54.369Z] [WARN] Registration gagal - nama kosong | {"email":"ibansyahdienx7@gmail.com"}
-[2026-04-30T05:57:04.037Z] [WARN] Registration gagal - password terlalu pendek | {"email":"ibansyahdienx7@gmail.com"}
-[2026-04-30T05:57:08.084Z] [WARN] Registration gagal - email sudah terdaftar | {"email":"ibansyahdienx7@gmail.com"}
+[2026-04-30T06:30:15.391Z] [ERROR] Cleanup blacklist error | {"message":"Table 'sims_ppob.token_blacklist' doesn't exist"}
+[2026-04-30T06:30:32.400Z] [ERROR] Cleanup blacklist error | {"message":"Table 'sims_ppob.token_blacklist' doesn't exist"}
+[2026-04-30T06:30:48.515Z] [ERROR] Logout error | {"email":"ibansyahdienx7@gmail.com","message":"Table 'sims_ppob.token_blacklist' doesn't exist"}
