@@ -1,0 +1,541 @@
+{
+  "info": {
+    "name": "SIMS PPOB API",
+    "_postman_id": "sims-ppob-collection-2024",
+    "description": "Collection untuk Take Home Test API - SIMS PPOB (Registrasi, Login, Profile, Information, Transaksi)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Module Membership",
+      "item": [
+        {
+          "name": "Registration",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@nutech-integrasi.com\",\n  \"first_name\": \"User\",\n  \"last_name\": \"Nutech\",\n  \"password\": \"abcdef1234\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/registration",
+              "host": ["{{base_url}}"],
+              "path": ["registration"]
+            },
+            "description": "Registrasi user baru. Email harus valid, password minimal 8 karakter."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Registrasi berhasil', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql(0);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Registration - Email Invalid",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"emailtidakvalid\",\n  \"first_name\": \"User\",\n  \"last_name\": \"Test\",\n  \"password\": \"abcdef1234\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/registration",
+              "host": ["{{base_url}}"],
+              "path": ["registration"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@nutech-integrasi.com\",\n  \"password\": \"abcdef1234\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": ["{{base_url}}"],
+              "path": ["login"]
+            },
+            "description": "Login dan dapatkan JWT token (berlaku 12 jam)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Token tersedia', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql(0);",
+                  "    pm.expect(json.data.token).to.be.a('string');",
+                  "    pm.collectionVariables.set('token', json.data.token);",
+                  "    console.log('Token disimpan:', json.data.token);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login - Password Salah",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@nutech-integrasi.com\",\n  \"password\": \"passwordsalah\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": ["{{base_url}}"],
+              "path": ["login"]
+            }
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/profile",
+              "host": ["{{base_url}}"],
+              "path": ["profile"]
+            },
+            "description": "Ambil data profile user dari JWT payload."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Data profile tersedia', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql(0);",
+                  "    pm.expect(json.data).to.have.property('email');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"User Edited\",\n  \"last_name\": \"Nutech Edited\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/profile/update",
+              "host": ["{{base_url}}"],
+              "path": ["profile", "update"]
+            }
+          }
+        },
+        {
+          "name": "Upload Profile Image",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "",
+                  "description": "Pilih file jpeg atau png"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/profile/image",
+              "host": ["{{base_url}}"],
+              "path": ["profile", "image"]
+            },
+            "description": "Upload profile image. Hanya format jpeg dan png yang diizinkan."
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Module Information",
+      "item": [
+        {
+          "name": "Get Banner",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/banner",
+              "host": ["{{base_url}}"],
+              "path": ["banner"]
+            },
+            "description": "Ambil list banner (public, tidak perlu token)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Data banner adalah array', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql(0);",
+                  "    pm.expect(json.data).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Services",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/services",
+              "host": ["{{base_url}}"],
+              "path": ["services"]
+            },
+            "description": "Ambil list layanan PPOB (butuh token)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Data services adalah array', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql(0);",
+                  "    pm.expect(json.data).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "3. Module Transaction",
+      "item": [
+        {
+          "name": "Get Balance",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/balance",
+              "host": ["{{base_url}}"],
+              "path": ["balance"]
+            },
+            "description": "Cek saldo / balance user."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Balance tersedia', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql(0);",
+                  "    pm.expect(json.data).to.have.property('balance');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Top Up",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"top_up_amount\": 1000000\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/topup",
+              "host": ["{{base_url}}"],
+              "path": ["topup"]
+            },
+            "description": "Top up saldo. top_up_amount harus angka positif."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Top Up berhasil dan balance bertambah', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql(0);",
+                  "    pm.expect(json.data.balance).to.be.a('number');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Top Up - Amount Negatif",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"top_up_amount\": -100\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/topup",
+              "host": ["{{base_url}}"],
+              "path": ["topup"]
+            }
+          }
+        },
+        {
+          "name": "Transaction - Pulsa",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"service_code\": \"PULSA\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/transaction",
+              "host": ["{{base_url}}"],
+              "path": ["transaction"]
+            },
+            "description": "Transaksi pembayaran Pulsa (tarif: Rp 40.000)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Transaksi berhasil', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql(0);",
+                  "    pm.expect(json.data.invoice_number).to.be.a('string');",
+                  "    pm.expect(json.data.transaction_type).to.eql('PAYMENT');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Transaction - PLN",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"service_code\": \"PLN\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/transaction",
+              "host": ["{{base_url}}"],
+              "path": ["transaction"]
+            },
+            "description": "Transaksi pembayaran Listrik PLN (tarif: Rp 10.000)."
+          }
+        },
+        {
+          "name": "Transaction - Voucher Game",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"service_code\": \"VOUCHER_GAME\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/transaction",
+              "host": ["{{base_url}}"],
+              "path": ["transaction"]
+            },
+            "description": "Transaksi Voucher Game (tarif: Rp 100.000)."
+          }
+        },
+        {
+          "name": "Transaction - Service Tidak Ada",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"service_code\": \"TIDAK_ADA\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/transaction",
+              "host": ["{{base_url}}"],
+              "path": ["transaction"]
+            }
+          }
+        },
+        {
+          "name": "Transaction History - Semua",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transaction/history",
+              "host": ["{{base_url}}"],
+              "path": ["transaction", "history"]
+            },
+            "description": "Ambil semua history transaksi (tanpa limit)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Records adalah array', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql(0);",
+                  "    pm.expect(json.data.records).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Transaction History - Dengan Limit & Offset",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/transaction/history?offset=0&limit=5",
+              "host": ["{{base_url}}"],
+              "path": ["transaction", "history"],
+              "query": [
+                { "key": "offset", "value": "0" },
+                { "key": "limit",  "value": "5" }
+              ]
+            },
+            "description": "History transaksi dengan pagination (offset=0, limit=5)."
+          }
+        }
+      ]
+    }
+  ]
+}

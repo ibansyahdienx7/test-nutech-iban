@@ -1,0 +1,36 @@
+[2026-04-30T05:49:06.672Z] [INFO] SIMS PPOB API running on port 3000
+[2026-04-30T05:49:19.627Z] [INFO] SIMS PPOB API running on port 3000
+[2026-04-30T05:49:21.951Z] [INFO] User berhasil registrasi | {"email":"ibansyahdienx7@gmail.com"}
+[2026-04-30T05:49:21.954Z] [INFO] POST /registration 200 - 91ms
+[2026-04-30T05:49:42.895Z] [INFO] User berhasil registrasi | {"email":"ibansyahdienx7@gmail.com"}
+[2026-04-30T05:49:42.896Z] [INFO] POST /registration 200 - 61ms
+[2026-04-30T05:51:34.024Z] [INFO] SIMS PPOB API running on port 3000
+[2026-04-30T05:51:38.432Z] [INFO] User berhasil registrasi | {"email":"ibansyahdienx7@gmail.com"}
+[2026-04-30T05:51:38.437Z] [INFO] POST /registration 200 - 96ms
+[2026-04-30T05:51:50.538Z] [INFO] SIMS PPOB API running on port 3000
+[2026-04-30T05:51:53.772Z] [WARN] Registration gagal - email sudah terdaftar | {"email":"ibansyahdienx7@gmail.com"}
+[2026-04-30T05:51:53.775Z] [INFO] POST /registration 400 - 33ms
+[2026-04-30T05:52:06.535Z] [INFO] User berhasil registrasi | {"email":"ibansyahdienx7@gmail.com"}
+[2026-04-30T05:52:06.537Z] [INFO] POST /registration 200 - 64ms
+[2026-04-30T05:52:13.738Z] [INFO] SIMS PPOB API running on port 3000
+[2026-04-30T05:52:17.682Z] [INFO] SIMS PPOB API running on port 3000
+[2026-04-30T05:53:06.213Z] [INFO] SIMS PPOB API running on port 3000
+[2026-04-30T05:53:10.734Z] [INFO] User berhasil registrasi | {"email":"ibansyahdienx7@gmail.com"}
+[2026-04-30T05:53:10.739Z] [INFO] POST /registration 200 - 95ms
+[2026-04-30T05:53:14.569Z] [WARN] Registration gagal - email sudah terdaftar | {"email":"ibansyahdienx7@gmail.com"}
+[2026-04-30T05:53:14.570Z] [ERROR] Registration error | {"email":"ibansyahdienx7@gmail.com","message":"Invalid status code: { id: 1 }"}
+[2026-04-30T05:53:14.571Z] [INFO] POST /registration 500 - 3ms
+[2026-04-30T05:53:25.817Z] [INFO] SIMS PPOB API running on port 3000
+[2026-04-30T05:53:28.225Z] [WARN] Registration gagal - email sudah terdaftar | {"email":"ibansyahdienx7@gmail.com"}
+[2026-04-30T05:53:28.228Z] [ERROR] Registration error | {"email":"ibansyahdienx7@gmail.com","message":"Invalid status code: {\n  id: 1,\n  email: 'ibansyahdienx7@gmail.com',\n  first_name: 'IBAN SYAHDIEN',\n  last_name: 'AKBAR',\n  balance: '0.00'\n}"}
+[2026-04-30T05:53:28.230Z] [INFO] POST /registration 500 - 34ms
+[2026-04-30T05:54:27.759Z] [INFO] SIMS PPOB API running on port 3000
+[2026-04-30T05:54:34.877Z] [INFO] SIMS PPOB API running on port 3000
+[2026-04-30T05:54:43.712Z] [WARN] Registration gagal - email sudah terdaftar | {"email":"ibansyahdienx7@gmail.com"}
+[2026-04-30T05:54:43.717Z] [INFO] POST /registration 400 - 34ms
+[2026-04-30T05:56:54.369Z] [WARN] Registration gagal - nama kosong | {"email":"ibansyahdienx7@gmail.com"}
+[2026-04-30T05:56:54.370Z] [INFO] POST /registration 400 - 1ms
+[2026-04-30T05:57:04.037Z] [WARN] Registration gagal - password terlalu pendek | {"email":"ibansyahdienx7@gmail.com"}
+[2026-04-30T05:57:04.038Z] [INFO] POST /registration 400 - 1ms
+[2026-04-30T05:57:08.084Z] [WARN] Registration gagal - email sudah terdaftar | {"email":"ibansyahdienx7@gmail.com"}
+[2026-04-30T05:57:08.086Z] [INFO] POST /registration 400 - 3ms
