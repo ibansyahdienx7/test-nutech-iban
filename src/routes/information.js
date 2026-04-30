@@ -14,7 +14,7 @@ router.delete('/banner/:id',             authenticate, deleteBanner);
 
 router.get('/services',                  authenticate, getServices);
 router.post('/services',                 authenticate, storeService);
-router.put('/services/:service_code',    authenticate, updateService);
-router.delete('/services/:service_code', authenticate, deleteService);
+router.put('/services/:id',              authenticate, updateService);
+router.delete('/services/:id',           authenticate, deleteService);
 
 module.exports = router;

@@ -157,9 +157,9 @@ const storeService = async (req, res) => {
   }
 };
 
-// PUT /services/:service_code
+// PUT /services/:id
 const updateService = async (req, res) => {
-  const { service_code } = req.params;
+  const { id } = req.params;
   const { service_name, service_icon, service_tariff } = req.body;
 
   if (!service_name || !service_icon) {
@@ -171,51 +171,51 @@ const updateService = async (req, res) => {
 
   try {
     const [existing] = await db.execute(
-      'SELECT id FROM services WHERE service_code = ?',
-      [service_code]
+      'SELECT id FROM services WHERE id = ?',
+      [id]
     );
     if (existing.length === 0) {
       return errorResponse(res, 102, 'Service tidak ditemukan', 404);
     }
 
     await db.execute(
-      'UPDATE services SET service_name = ?, service_icon = ?, service_tariff = ? WHERE service_code = ?',
-      [service_name, service_icon, Number(service_tariff), service_code]
+      'UPDATE services SET service_name = ?, service_icon = ?, service_tariff = ? WHERE id = ?',
+      [service_name, service_icon, Number(service_tariff), id]
     );
 
     const [rows] = await db.execute(
-      'SELECT service_code, service_name, service_icon, service_tariff FROM services WHERE service_code = ?',
-      [service_code]
+      'SELECT id, service_code, service_name, service_icon, service_tariff FROM services WHERE id = ?',
+      [id]
     );
 
     const data = { ...rows[0], service_tariff: parseFloat(rows[0].service_tariff) };
-    logger.info('Service diupdate', { service_code });
+    logger.info('Service diupdate', { id });
     return successResponse(res, 'Service berhasil diupdate', data);
   } catch (err) {
-    logger.error('Update service error', { service_code, message: err.message });
+    logger.error('Update service error', { id, message: err.message });
     return errorResponse(res, 500, 'Internal server error', 500);
   }
 };
 
-// DELETE /services/:service_code
+// DELETE /services/:id
 const deleteService = async (req, res) => {
-  const { service_code } = req.params;
+  const { id } = req.params;
 
   try {
     const [existing] = await db.execute(
-      'SELECT service_code, service_name FROM services WHERE service_code = ?',
-      [service_code]
+      'SELECT id, service_code, service_name FROM services WHERE id = ?',
+      [id]
     );
     if (existing.length === 0) {
       return errorResponse(res, 102, 'Service tidak ditemukan', 404);
     }
 
-    await db.execute('DELETE FROM services WHERE service_code = ?', [service_code]);
+    await db.execute('DELETE FROM services WHERE id = ?', [id]);
 
-    logger.info('Service dihapus', { service_code });
-    return successResponse(res, 'Service berhasil dihapus', { service_code: existing[0].service_code, service_name: existing[0].service_name });
+    logger.info('Service dihapus', { id, service_code: existing[0].service_code });
+    return successResponse(res, 'Service berhasil dihapus', { id: existing[0].id, service_code: existing[0].service_code, service_name: existing[0].service_name });
   } catch (err) {
-    logger.error('Delete service error', { service_code, message: err.message });
+    logger.error('Delete service error', { id, message: err.message });
     return errorResponse(res, 500, 'Internal server error', 500);
   }
 };

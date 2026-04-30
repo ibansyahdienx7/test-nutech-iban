@@ -106,3 +106,18 @@
 [2026-04-30T06:59:48.254Z] [INFO] Database siap - tabel token_blacklist OK
 [2026-04-30T07:00:30.899Z] [INFO] SIMS PPOB API running on port 3000
 [2026-04-30T07:00:30.975Z] [INFO] Database siap - tabel token_blacklist OK
+[2026-04-30T07:03:08.752Z] [INFO] GET /services 200 - 41ms
+[2026-04-30T07:03:49.965Z] [INFO] SIMS PPOB API running on port 3000
+[2026-04-30T07:03:50.020Z] [INFO] Database siap - tabel token_blacklist OK
+[2026-04-30T07:03:57.161Z] [INFO] SIMS PPOB API running on port 3000
+[2026-04-30T07:03:57.217Z] [INFO] Database siap - tabel token_blacklist OK
+[2026-04-30T07:04:07.990Z] [INFO] SIMS PPOB API running on port 3000
+[2026-04-30T07:04:08.047Z] [INFO] Database siap - tabel token_blacklist OK
+[2026-04-30T07:04:15.325Z] [INFO] SIMS PPOB API running on port 3000
+[2026-04-30T07:04:15.377Z] [INFO] Database siap - tabel token_blacklist OK
+[2026-04-30T07:04:44.355Z] [INFO] SIMS PPOB API running on port 3000
+[2026-04-30T07:04:44.408Z] [INFO] Database siap - tabel token_blacklist OK
+[2026-04-30T07:04:50.711Z] [INFO] SIMS PPOB API running on port 3000
+[2026-04-30T07:04:50.764Z] [INFO] Database siap - tabel token_blacklist OK
+[2026-04-30T07:04:57.425Z] [INFO] SIMS PPOB API running on port 3000
+[2026-04-30T07:04:57.478Z] [INFO] Database siap - tabel token_blacklist OK

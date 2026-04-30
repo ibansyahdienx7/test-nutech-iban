@@ -433,15 +433,15 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"service_name\": \"Internet Berlangganan Updated\",\n  \"service_icon\": \"https://nutech-integrasi.app/dummy/logo/Internet.png\",\n  \"service_tariff\": 200000\n}",
+                  "raw": "{\n  \"service_name\": \"Pulsa Updated\",\n  \"service_icon\": \"https://nutech-integrasi.app/dummy/logo/Pulsa.png\",\n  \"service_tariff\": 45000\n}",
                   "options": { "raw": { "language": "json" } }
                 },
                 "url": {
-                  "raw": "{{base_url}}/services/INTERNET",
+                  "raw": "{{base_url}}/services/1",
                   "host": ["{{base_url}}"],
-                  "path": ["services", "INTERNET"]
+                  "path": ["services", "1"]
                 },
-                "description": "Update layanan berdasarkan service_code."
+                "description": "Update layanan berdasarkan ID."
               },
               "event": [
                 {
@@ -476,11 +476,11 @@
                   "options": { "raw": { "language": "json" } }
                 },
                 "url": {
-                  "raw": "{{base_url}}/services/SERVICE_TIDAK_ADA",
+                  "raw": "{{base_url}}/services/99999",
                   "host": ["{{base_url}}"],
-                  "path": ["services", "SERVICE_TIDAK_ADA"]
+                  "path": ["services", "99999"]
                 },
-                "description": "Update service dengan code yang tidak ada — harus return 404."
+                "description": "Update service dengan ID yang tidak ada — harus return 404."
               }
             },
             {
@@ -539,11 +539,11 @@
                   { "key": "Authorization", "value": "Bearer {{token}}" }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/services/INTERNET",
+                  "raw": "{{base_url}}/services/1",
                   "host": ["{{base_url}}"],
-                  "path": ["services", "INTERNET"]
+                  "path": ["services", "1"]
                 },
-                "description": "Hapus service berdasarkan service_code."
+                "description": "Hapus service berdasarkan ID."
               },
               "event": [
                 {
@@ -572,11 +572,11 @@
                   { "key": "Authorization", "value": "Bearer {{token}}" }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/services/SERVICE_TIDAK_ADA",
+                  "raw": "{{base_url}}/services/99999",
                   "host": ["{{base_url}}"],
-                  "path": ["services", "SERVICE_TIDAK_ADA"]
+                  "path": ["services", "99999"]
                 },
-                "description": "Hapus service yang tidak ada — harus return 404."
+                "description": "Hapus service dengan ID yang tidak ada — harus return 404."
               }
             }
           ]
