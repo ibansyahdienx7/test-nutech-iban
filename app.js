@@ -73,11 +73,16 @@ const initDatabase = async () => {
 };
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, async () => {
-  logger.info(`SIMS PPOB API running on port ${PORT}`);
-  await initDatabase();
-  cleanupBlacklist();
-  setInterval(cleanupBlacklist, 60 * 60 * 1000);
-});
+
+if (require.main === module) {
+  app.listen(PORT, async () => {
+    logger.info(`SIMS PPOB API running on port ${PORT}`);
+    await initDatabase();
+    cleanupBlacklist();
+    setInterval(cleanupBlacklist, 60 * 60 * 1000);
+  });
+} else {
+  initDatabase();
+}
 
 module.exports = app;

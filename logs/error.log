@@ -1,3 +1,0 @@
-[2026-04-30T06:30:15.391Z] [ERROR] Cleanup blacklist error | {"message":"Table 'sims_ppob.token_blacklist' doesn't exist"}
-[2026-04-30T06:30:32.400Z] [ERROR] Cleanup blacklist error | {"message":"Table 'sims_ppob.token_blacklist' doesn't exist"}
-[2026-04-30T06:30:48.515Z] [ERROR] Logout error | {"email":"ibansyahdienx7@gmail.com","message":"Table 'sims_ppob.token_blacklist' doesn't exist"}

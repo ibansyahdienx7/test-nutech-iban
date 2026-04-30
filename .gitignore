@@ -1,2 +1,5 @@
 .env
 database/schema.sql
+node_modules/
+logs/
+uploads/
