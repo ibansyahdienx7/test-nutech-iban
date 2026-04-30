@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const jwt    = require('jsonwebtoken');
-const db     = require('../config/database');
+const jwt = require('jsonwebtoken');
+const db = require('../config/database');
 const { successResponse, errorResponse } = require('../helpers/response');
 const logger = require('../helpers/logger');
 
@@ -92,8 +92,15 @@ const login = async (req, res) => {
       { expiresIn: '12h' }
     );
 
+    const userResponse = {
+      email: user.email,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      balance: user.balance
+    };
+
     logger.info('User berhasil login', { email });
-    return successResponse(res, 'Login Sukses', { token });
+    return successResponse(res, 'Login Sukses', { token, user: userResponse });
   } catch (err) {
     logger.error('Login error', { email, message: err.message });
     return errorResponse(res, 500, 'Internal server error', 500);
@@ -197,7 +204,7 @@ const logout = async (req, res) => {
 
   try {
     const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
-    const decoded   = jwt.decode(token);
+    const decoded = jwt.decode(token);
     const expiredAt = new Date(decoded.exp * 1000);
 
     await db.execute(
