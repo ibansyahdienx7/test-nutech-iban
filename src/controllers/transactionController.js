@@ -4,10 +4,10 @@ const logger = require('../helpers/logger');
 
 const generateInvoiceNumber = () => {
   const now = new Date();
-  const day   = String(now.getDate()).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
   const month = String(now.getMonth() + 1).padStart(2, '0');
-  const year  = now.getFullYear();
-  const ms    = Date.now().toString().slice(-6);
+  const year = now.getFullYear();
+  const ms = Date.now().toString().slice(-6);
   return `INV${day}${month}${year}-${ms}`;
 };
 
@@ -60,9 +60,9 @@ const topUp = async (req, res) => {
       return errorResponse(res, 108, 'Token tidak tidak valid atau kadaluwarsa', 401);
     }
 
-    const user       = users[0];
+    const user = users[0];
     const newBalance = parseFloat(user.balance) + top_up_amount;
-    const invoice    = generateInvoiceNumber();
+    const invoice = generateInvoiceNumber();
 
     await conn.execute(
       'UPDATE users SET balance = ? WHERE id = ?',
@@ -82,6 +82,70 @@ const topUp = async (req, res) => {
   } catch (err) {
     await conn.rollback();
     logger.error('Top Up error', { email: req.user.email, message: err.message });
+    return errorResponse(res, 500, 'Internal server error', 500);
+  } finally {
+    conn.release();
+  }
+};
+
+// POST /deduct
+const deduct = async (req, res) => {
+  const { deduct_amount } = req.body;
+
+  if (
+    deduct_amount === undefined ||
+    deduct_amount === null ||
+    typeof deduct_amount !== 'number' ||
+    !Number.isFinite(deduct_amount) ||
+    deduct_amount <= 0
+  ) {
+    return errorResponse(
+      res, 102,
+      'Parameter amount hanya boleh angka dan tidak boleh lebih kecil dari 0'
+    );
+  }
+
+  const conn = await db.getConnection();
+  try {
+    await conn.beginTransaction();
+
+    const [users] = await conn.execute(
+      'SELECT id, balance FROM users WHERE email = ? FOR UPDATE',
+      [req.user.email]
+    );
+    if (users.length === 0) {
+      await conn.rollback();
+      return errorResponse(res, 108, 'Token tidak tidak valid atau kadaluwarsa', 401);
+    }
+
+    const user = users[0];
+    if (parseFloat(user.balance) < deduct_amount) {
+      await conn.rollback();
+      logger.warn('Deduct gagal - saldo tidak mencukupi', { email: req.user.email, balance: user.balance, deduct_amount });
+      return errorResponse(res, 102, 'Saldo tidak mencukupi');
+    }
+
+    const newBalance = parseFloat(user.balance) - deduct_amount;
+    const invoice = generateInvoiceNumber();
+
+    await conn.execute(
+      'UPDATE users SET balance = ? WHERE id = ?',
+      [newBalance, user.id]
+    );
+
+    await conn.execute(
+      `INSERT INTO transactions
+         (user_id, invoice_number, service_code, service_name, transaction_type, total_amount)
+       VALUES (?, ?, NULL, ?, 'PAYMENT', ?)`,
+      [user.id, invoice, 'Pengurangan Saldo', deduct_amount]
+    );
+
+    await conn.commit();
+    logger.info('Deduct berhasil', { email: req.user.email, amount: deduct_amount, newBalance, invoice });
+    return successResponse(res, 'Pengurangan saldo berhasil', { balance: newBalance });
+  } catch (err) {
+    await conn.rollback();
+    logger.error('Deduct error', { email: req.user.email, message: err.message });
     return errorResponse(res, 500, 'Internal server error', 500);
   } finally {
     conn.release();
@@ -110,7 +174,7 @@ const transaction = async (req, res) => {
     }
 
     const service = services[0];
-    const tariff  = parseFloat(service.service_tariff);
+    const tariff = parseFloat(service.service_tariff);
 
     const [users] = await conn.execute(
       'SELECT id, balance FROM users WHERE email = ? FOR UPDATE',
@@ -128,9 +192,9 @@ const transaction = async (req, res) => {
       return errorResponse(res, 102, 'Saldo tidak mencukupi');
     }
 
-    const newBalance  = parseFloat(user.balance) - tariff;
-    const invoice     = generateInvoiceNumber();
-    const createdOn   = new Date();
+    const newBalance = parseFloat(user.balance) - tariff;
+    const invoice = generateInvoiceNumber();
+    const createdOn = new Date();
 
     await conn.execute(
       'UPDATE users SET balance = ? WHERE id = ?',
@@ -147,12 +211,12 @@ const transaction = async (req, res) => {
     await conn.commit();
     logger.info('Transaksi berhasil', { email: req.user.email, service_code, invoice, tariff });
     return successResponse(res, 'Transaksi berhasil', {
-      invoice_number:   invoice,
-      service_code:     service.service_code,
-      service_name:     service.service_name,
+      invoice_number: invoice,
+      service_code: service.service_code,
+      service_name: service.service_name,
       transaction_type: 'PAYMENT',
-      total_amount:     tariff,
-      created_on:       createdOn
+      total_amount: tariff,
+      created_on: createdOn
     });
   } catch (err) {
     await conn.rollback();
@@ -166,7 +230,7 @@ const transaction = async (req, res) => {
 // GET /transaction/history
 const transactionHistory = async (req, res) => {
   const offset = parseInt(req.query.offset) || 0;
-  const limit  = req.query.limit !== undefined ? parseInt(req.query.limit) : null;
+  const limit = req.query.limit !== undefined ? parseInt(req.query.limit) : null;
 
   try {
     const [users] = await db.execute(
@@ -202,16 +266,16 @@ const transactionHistory = async (req, res) => {
     }
 
     const mapped = records.map((r) => ({
-      invoice_number:   r.invoice_number,
+      invoice_number: r.invoice_number,
       transaction_type: r.transaction_type,
-      description:      r.description,
-      total_amount:     parseFloat(r.total_amount),
-      created_on:       r.created_on
+      description: r.description,
+      total_amount: parseFloat(r.total_amount),
+      created_on: r.created_on
     }));
 
     return successResponse(res, 'Get History Berhasil', {
       offset,
-      limit:   limit !== null ? limit : records.length,
+      limit: limit !== null ? limit : records.length,
       records: mapped
     });
   } catch (err) {
@@ -220,4 +284,4 @@ const transactionHistory = async (req, res) => {
   }
 };
 
-module.exports = { getBalance, topUp, transaction, transactionHistory };
+module.exports = { getBalance, topUp, deduct, transaction, transactionHistory };

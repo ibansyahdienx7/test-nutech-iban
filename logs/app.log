@@ -9,3 +9,9 @@
 [2026-04-30T11:33:19.347Z] [INFO] SIMS PPOB API running on port 3000
 [2026-04-30T11:33:19.414Z] [INFO] Database siap - tabel token_blacklist OK
 [2026-04-30T11:33:19.433Z] [INFO] Cleanup blacklist: 1 token expired dihapus
+[2026-04-30T11:43:07.131Z] [INFO] SIMS PPOB API running on port 3000
+[2026-04-30T11:43:07.213Z] [INFO] Database siap - tabel token_blacklist OK
+[2026-04-30T11:43:13.798Z] [INFO] SIMS PPOB API running on port 3000
+[2026-04-30T11:43:13.886Z] [INFO] Database siap - tabel token_blacklist OK
+[2026-04-30T11:43:20.654Z] [INFO] SIMS PPOB API running on port 3000
+[2026-04-30T11:43:20.759Z] [INFO] Database siap - tabel token_blacklist OK
