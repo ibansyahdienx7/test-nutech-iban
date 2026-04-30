@@ -5,7 +5,9 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "build": "npm install --omit=dev",
+    "prod": "NODE_ENV=production node app.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
