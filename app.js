@@ -1,14 +1,14 @@
 require('dotenv').config();
 
 const express = require('express');
-const path    = require('path');
-const fs      = require('fs');
-const logger  = require('./src/helpers/logger');
-const db      = require('./src/config/database');
+const path = require('path');
+const fs = require('fs');
+const logger = require('./src/helpers/logger');
+const db = require('./src/config/database');
 
-const membershipRoutes    = require('./src/routes/membership');
-const informationRoutes   = require('./src/routes/information');
-const transactionRoutes   = require('./src/routes/transaction');
+const membershipRoutes = require('./src/routes/membership');
+const informationRoutes = require('./src/routes/information');
+const transactionRoutes = require('./src/routes/transaction');
 
 const app = express();
 
@@ -28,6 +28,17 @@ app.use((req, res, next) => {
     logger.info(`${req.method} ${req.originalUrl} ${res.statusCode} - ${duration}ms`);
   });
   next();
+});
+
+// Root route - return Node.js version
+app.get('/', (req, res) => {
+  res.json({
+    status: 200,
+    message: 'API is running',
+    node_version: process.version,
+    platform: process.platform,
+    environment: process.env.NODE_ENV || 'development'
+  });
 });
 
 app.use('/', membershipRoutes);
