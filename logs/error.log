@@ -1,0 +1,3 @@
+[2026-04-30T09:57:54.147Z] [ERROR] Gagal inisialisasi database | {"message":"Unknown database 'sims_ppob'"}
+[2026-04-30T09:57:54.151Z] [ERROR] Cleanup blacklist error | {"message":"Unknown database 'sims_ppob'"}
+[2026-04-30T11:18:00.783Z] [ERROR] Cleanup blacklist error | {"message":"read ECONNRESET"}

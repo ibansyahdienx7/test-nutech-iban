@@ -1,0 +1,11 @@
+[2026-04-30T09:57:54.117Z] [INFO] SIMS PPOB API running on port 3000
+[2026-04-30T09:57:54.147Z] [ERROR] Gagal inisialisasi database | {"message":"Unknown database 'sims_ppob'"}
+[2026-04-30T09:57:54.151Z] [ERROR] Cleanup blacklist error | {"message":"Unknown database 'sims_ppob'"}
+[2026-04-30T09:58:25.314Z] [INFO] SIMS PPOB API running on port 3000
+[2026-04-30T09:58:25.402Z] [INFO] Database siap - tabel token_blacklist OK
+[2026-04-30T10:00:09.316Z] [INFO] SIMS PPOB API running on port 3000
+[2026-04-30T10:00:09.398Z] [INFO] Database siap - tabel token_blacklist OK
+[2026-04-30T11:18:00.783Z] [ERROR] Cleanup blacklist error | {"message":"read ECONNRESET"}
+[2026-04-30T11:33:19.347Z] [INFO] SIMS PPOB API running on port 3000
+[2026-04-30T11:33:19.414Z] [INFO] Database siap - tabel token_blacklist OK
+[2026-04-30T11:33:19.433Z] [INFO] Cleanup blacklist: 1 token expired dihapus
